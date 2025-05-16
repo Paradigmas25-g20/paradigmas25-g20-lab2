@@ -25,7 +25,6 @@ public class FeedReaderMain {
 
 	  processSubscription("paradigmas25-g20-lab2/config/subscriptions.json");
 			/*
-
 			Llamar al Parser especifico para extrar los datos necesarios por la aplicacion
 			Llamar al constructor de Feed
 			Llamar a la heuristica para que compute las entidades nombradas de cada articulos del feed
