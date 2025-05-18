@@ -1,8 +1,11 @@
 package parser;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.SingleSelectionModel;
+
+import org.json.JSONTokener;
 import subscription.SingleSubscription;
 import subscription.Subscription;
 import org.json.JSONArray;
@@ -16,46 +19,39 @@ import org.json.JSONObject;
 
 public class SubscriptionParser extends GeneralParser {
 
-
-    @Override
-     public Subscription parseSubscriptions(String json) {
-
-
-
-        JSONArray arr = new JSONArray(json);
-        Subscription subList = new Subscription();
-        for(int i=0 ; i<arr.length();i++){
-
-              JSONObject currentJsonObj = arr.getJSONObject(i);
-              List<String> urlParams= new ArrayList<>();
-              String url = currentJsonObj.getString("url");
-              String urlType = currentJsonObj.getString("urlType");
-              paramsList(currentJsonObj, urlParams);
-              SingleSubscription sub = new SingleSubscription(url,urlParams ,urlType);
-              subList.addSingleSubscription(sub);
-
-
-        }
-        return  subList;
-
-    }
-
-
-
-  private List<String> paramsList(JSONObject obj, List<String> urlParams ) {
-    try {
-
-            JSONArray urlParamsArray = obj.getJSONArray("urlParams");
-            for (int i = 0; i < urlParamsArray.length(); i++) {
-                urlParams.add(urlParamsArray.getString(i));
+    public Subscription parseSubscriptions() {
+        // Creo el objeto que guardará mi lista de suscripciones.
+        Subscription parsedSubs = new Subscription();
+        try {
+            // Leo el archivo de suscripciones.
+            FileReader jsonFile = new FileReader("config/subscriptions.json");
+            // Lo parseo a un arreglo de JSONs.
+            JSONArray toParseSubs = new JSONArray(new JSONTokener(jsonFile));
+            // Itero sobre dicho arreglo para ir armando los SingleSubscriptions.
+            for (int i = 0; i < toParseSubs.length(); i++) {
+                // Parseo cada elemento del arreglo a un JSON.
+                JSONObject obj = toParseSubs.getJSONObject(i);
+                // Creo el arreglo con los parámetros de la URL.
+                JSONArray toParseUrlParams = obj.getJSONArray("urlParams");
+                List<String> parsedUrlParams = new ArrayList<>();
+                for (int j = 0; j < toParseUrlParams.length(); j++) {
+                    parsedUrlParams.add(toParseUrlParams.getString(j));
+                }
+                // Instancio un SingleSubscription con la data recolectada.
+                SingleSubscription singleSub = new SingleSubscription(obj.getString("url"), parsedUrlParams, obj.getString("urlType"));
+                // Añado a mi ista de suscripciones la SingleSubscription recién creada.
+                parsedSubs.addSingleSubscription(singleSub);
             }
-        } catch (JSONException e) {
-            System.err.println("Error al parsear JSON para obtener parámetros: " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found." + e.getMessage());
         }
-        return urlParams;
-
+        // Devuelvo la lista de suscripciones como un String.
+        return parsedSubs;
     }
 
-
-
+    public static void main(String[] args) {
+        // Main para corroborar la correctitud del parseSubscription.
+        SubscriptionParser parsedData = new SubscriptionParser();
+        System.out.println(parsedData.parseSubscriptions());
+    }
 }
