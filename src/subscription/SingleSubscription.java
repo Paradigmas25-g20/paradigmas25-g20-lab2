@@ -15,7 +15,8 @@ public class SingleSubscription {
 	public SingleSubscription(String url, List<String> ulrParams, String urlType) {
 		super();
 		this.url = url;
-		this.ulrParams = new ArrayList<String>() ;
+		// Modifico el constructor para que se intancie el objeto con la lista de urlParams que le pase al llamarlo.
+		this.ulrParams = ulrParams;
 		this.urlType = urlType;
 	}
 

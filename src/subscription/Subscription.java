@@ -6,9 +6,8 @@ import java.util.List;
 /*Esta clse abstrae el contenido del archivo  de suscripcion(json)*/
 public class Subscription {
 	private List<SingleSubscription> suscriptionsList;
-	
-	
-	public Subscription(String subscriptionFilePath) {
+
+	public Subscription() {
 		super();
 		this.suscriptionsList = new ArrayList<SingleSubscription>();
 	}
@@ -39,7 +38,7 @@ public class Subscription {
 	}
 	
 	public static void main(String[] args) {
-		Subscription a = new Subscription(null);
+		Subscription a = new Subscription();
 	
 		SingleSubscription s0 = new SingleSubscription("https://www.chicagotribune.com/arcio/rss/category/%s/?query=display_date:[now-2d+TO+now]&sort=display_date:desc", null, "rss");
 		s0.setUlrParams("business");		
