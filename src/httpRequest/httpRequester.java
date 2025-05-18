@@ -21,6 +21,7 @@ private String sendRequest(String urlFeed){
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 						.uri(new URI(urlFeed))
+						.header("User-Agent", "MiLectorDeFeeds/1.0")
 						.GET() // Especifica el método GET
 						.build();
 
@@ -42,17 +43,16 @@ private String sendRequest(String urlFeed){
 
 
 
-public String getFeedRss(String urlFeed){
-
-		return sendRequest(urlFeed);
+public String getFeedRss(String fullurlFeed){
+ 	System.out.println("Solicitando RSS desde: " + fullurlFeed);
+		return sendRequest(fullurlFeed);
 
 }
 
-public String getFeedReedit(String urlFeed) {
-
-	return sendRequest(urlFeed);
+public String getFeedReedit(String fullurlFeed) {
+	 System.out.println("Solicitando Reddit desde: " + fullurlFeed);
+	return sendRequest(fullurlFeed);
 }
 }
-
 
 
