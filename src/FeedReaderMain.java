@@ -1,5 +1,5 @@
 
-import httpRequest.httpRequester;
+import httpRequest.HttpRequester;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
