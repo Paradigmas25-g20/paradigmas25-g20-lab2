@@ -1,14 +1,5 @@
 package parser;
 
-
-/*
- * Esta clase implementa el parser de feed de tipo reddit (json)
- * pero no es necesario su implemntacion
- * */
-
-
-package parser;
-
 import feed.Article;
 import feed.Feed;
 import org.w3c.dom.Document;
@@ -143,36 +134,36 @@ public class RssParser extends GeneralParser {
 
                 NodeList nList = channelElement.getChildNodes();
 
-                    for (int currentItem = 0; currentItem < nList.getLength(); currentItem++) {
-                        Node itemNode = nList.item(currentItem);
-                        if (itemNode.getNodeType() == Node.ELEMENT_NODE && itemNode.getNodeName().equalsIgnoreCase("item")) {
+                for (int currentItem = 0; currentItem < nList.getLength(); currentItem++) {
+                    Node itemNode = nList.item(currentItem);
+                    if (itemNode.getNodeType() == Node.ELEMENT_NODE && itemNode.getNodeName().equalsIgnoreCase("item")) {
 
-                            Element eElement = (Element) itemNode;
-                            String title = getTitle(eElement);
-                            String link = getLink(eElement);
-                            String descip = getDescription(eElement);
-                            String pubDateStr = getPubDate(eElement);
-                            Date data = null;
-
-
+                        Element eElement = (Element) itemNode;
+                        String title = getTitle(eElement);
+                        String link = getLink(eElement);
+                        String descip = getDescription(eElement);
+                        String pubDateStr = getPubDate(eElement);
+                        Date data = null;
 
 
-                            try {
-                                if (pubDateStr != null && !pubDateStr.isEmpty()) {
-                                   data = formatter.parse(pubDateStr);
-                                } else {
-                                    // Opcional: loguear que la fecha estaba vacía
-                                    // System.out.println("Fecha vacía para el artículo: " + title);
-                                }
-                                Article new_art = new Article(title, descip, data, link);
-                                listFeed.addArticle(new_art);
-                            } catch (java.text.ParseException pe) { // Atrapar específicamente ParseException
-                                System.err.println("Error al parsear fecha '" + pubDateStr + "' para el artículo con título: '" + title + "'. Omitiendo fecha para este artículo.");
-                                // publicationDate permanece null, el artículo se creará sin fecha
+
+
+                        try {
+                            if (pubDateStr != null && !pubDateStr.isEmpty()) {
+                                data = formatter.parse(pubDateStr);
+                            } else {
+                                // Opcional: loguear que la fecha estaba vacía
+                                // System.out.println("Fecha vacía para el artículo: " + title);
                             }
+                            Article new_art = new Article(title, descip, data, link);
+                            listFeed.addArticle(new_art);
+                        } catch (java.text.ParseException pe) { // Atrapar específicamente ParseException
+                            System.err.println("Error al parsear fecha '" + pubDateStr + "' para el artículo con título: '" + title + "'. Omitiendo fecha para este artículo.");
+                            // publicationDate permanece null, el artículo se creará sin fecha
                         }
-
                     }
+
+                }
 
 
             } else {
@@ -232,5 +223,3 @@ public class RssParser extends GeneralParser {
 }
 
 
-
-}
