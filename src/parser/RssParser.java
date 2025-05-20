@@ -2,6 +2,7 @@ package parser;
 
 import feed.Article;
 import feed.Feed;
+import httpRequest.HttpRequester;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 /*Una vez conseguidos la lista de artículos de un feed, van a extraer sólo aquellos atributos
 del artículo (item) que nos interesa (title, description,pubDate,link )
@@ -26,101 +26,20 @@ public class RssParser extends GeneralParser {
 
     SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 
-    public static void main(String[] args) {
-        RssParser parser = new RssParser();
-
-        // Ejemplo de un String XML para un feed RSS
-        String xmlData = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
-                "<rss version=\"2.0\">" +
-                "<channel>" +
-                "  <title>Ejemplo de Feed RSS</title>" +
-                "  <link>http://www.ejemplo.com</link>" +
-                "  <description>Este es un feed RSS de ejemplo.</description>" +
-                "  <item>" +
-                "    <title>Artículo de Ejemplo 1</title>" +
-                "    <link>http://www.ejemplo.com/articulo1</link>" +
-                "    <description>Descripción del primer artículo.</description>" +
-                "    <pubDate>Mon, 01 Jan 2024 10:00:00 +0000</pubDate>" +
-                "  </item>" +
-                "  <item>" +
-                "    <title>Artículo de Ejemplo 2</title>" +
-                "    <link>http://www.ejemplo.com/articulo2</link>" +
-                "    <description>Descripción del segundo artículo con fecha mala.</description>" +
-                "    <pubDate>Fecha Incorrecta</pubDate>" +
-                "  </item>" +
-                "  <item>" +
-                "    <title>Artículo de Ejemplo 3 Sin Fecha</title>" +
-                "    <link>http://www.ejemplo.com/articulo3</link>" +
-                "    <description>Descripción del tercer artículo.</description>" +
-                "  </item>" +
-                "  <item>" +
-                "    <title></title>" + // Artículo sin título
-                "    <link>http://www.ejemplo.com/articulosinTitulo</link>" +
-                "    <description>Este artículo no tiene título.</description>" +
-                "    <pubDate>Tue, 02 Jan 2024 12:00:00 +0000</pubDate>" +
-                "  </item>" +
-                "</channel>" +
-                "</rss>";
-
-        System.out.println("--- Probando con XML válido ---");
-        List<Article> articles = parser.genparser(xmlData);
-
-        if (articles.isEmpty()) {
-            System.out.println("No se parsearon artículos o el feed estaba vacío/con errores.");
-        } else {
-            System.out.println("\nArtículos Parseados (" + articles.size() + "):");
-            for (Article article : articles) {
-                // Asumiendo que tu clase Article tiene un método prettyPrint() o toString() útil
-                article.prettyPrint(); // O System.out.println(article);
-                System.out.println("---");
-            }
-        }
-
-        System.out.println("\n--- Probando con XML inválido (canal faltante) ---");
-        String invalidXmlChannelMissing = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
-                "<rss version=\"2.0\">" +
-                // No hay <channel>
-                "</rss>";
-        List<Article> articlesFromInvalid = parser.genparser(invalidXmlChannelMissing);
-        if (articlesFromInvalid.isEmpty()) {
-            System.out.println("Correcto: No se parsearon artículos del XML inválido (canal faltante).");
-        } else {
-            System.out.println("Error: Se parsearon artículos de un XML sin canal.");
-        }
-
-        System.out.println("\n--- Probando con XML completamente malformado ---");
-        String malformedXml = "<rss><channel<title>Test</title></rss>"; // XML malformado
-        List<Article> articlesFromMalformed = parser.genparser(malformedXml);
-        if (articlesFromMalformed.isEmpty()) {
-            System.out.println("Correcto: No se parsearon artículos del XML malformado.");
-        } else {
-            System.out.println("Error: Se parsearon artículos de un XML malformado.");
-        }
-
-        System.out.println("\n--- Fin de las pruebas ---");
-    }
-
-    public List<Article> genparser(String new_parser) {
+    public Feed parseRss (String rssToParse) {
         Feed listFeed = null;
         try {
-
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = factory.newDocumentBuilder();
-            //PARSEAMOS EL XML
-            ByteArrayInputStream input = new ByteArrayInputStream(new_parser.getBytes(StandardCharsets.UTF_8));
+            // Parseamos el rss
+            ByteArrayInputStream input = new ByteArrayInputStream(rssToParse.getBytes(StandardCharsets.UTF_8));
             Document xmldoc = docBuilder.parse(input);
-            //creamos la lista de feed para devolver
-
-            //creamos la clase para formatear data
-
-            //RECORREMOS EL ARRAY IMPUT
+            // Recorremos el rss
             Element rootelement = xmldoc.getDocumentElement();
             NodeList rootChildren = rootelement.getChildNodes(); //
             System.out.println("Root element name is " + rootelement.getTagName());
             Element channelElement = null;
-
             // El root es rss y nosotros queremos encotrar el primer hijo channel para poder recorrer adentro de el
-
             for (int i = 0; i < rootChildren.getLength(); i++) {
                 Node node = rootChildren.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equalsIgnoreCase("channel")) {
@@ -141,46 +60,30 @@ public class RssParser extends GeneralParser {
                         Element eElement = (Element) itemNode;
                         String title = getTitle(eElement);
                         String link = getLink(eElement);
-                        String descip = getDescription(eElement);
+                        String descrip = getDescription(eElement);
                         String pubDateStr = getPubDate(eElement);
                         Date data = null;
-
-
-
-
+                        
                         try {
                             if (pubDateStr != null && !pubDateStr.isEmpty()) {
                                 data = formatter.parse(pubDateStr);
-                            } else {
-                                // Opcional: loguear que la fecha estaba vacía
-                                // System.out.println("Fecha vacía para el artículo: " + title);
                             }
-                            Article new_art = new Article(title, descip, data, link);
+                            Article new_art = new Article(title, descrip, data, link);
                             listFeed.addArticle(new_art);
                         } catch (java.text.ParseException pe) { // Atrapar específicamente ParseException
                             System.err.println("Error al parsear fecha '" + pubDateStr + "' para el artículo con título: '" + title + "'. Omitiendo fecha para este artículo.");
                             // publicationDate permanece null, el artículo se creará sin fecha
                         }
                     }
-
                 }
-
-
             } else {
-
                 System.out.println("Elemento <channel> no encontrado!");
                 return null;
-
             }
-
         } catch (Exception e) {
             System.err.println("Error durante el parseo del XML: " + e.getMessage());
-            e.printStackTrace();
         }
-
-        return listFeed.getArticleList();
-
-
+        return listFeed;
     }
 
     private String getLink(Element element) {
@@ -217,8 +120,16 @@ public class RssParser extends GeneralParser {
         if (titleNodes.getLength() > 0 && titleNodes.item(0) != null) {
             title = titleNodes.item(0).getTextContent();
         }
-
         return title;
+    }
+
+    public static void main(String[] args) {
+        // Coroboramos correctitud acumulativa de la clase.
+        RssParser rssToParse = new RssParser();
+        SubscriptionParser subsToParse = new SubscriptionParser();
+        String urlToReq = subsToParse.parseSubscriptions().getSingleSubscription(0).getFeedToRequest(0);
+        HttpRequester httpReq = new HttpRequester();
+        rssToParse.parseRss(httpReq.getFeedRss(urlToReq)).prettyPrint();
     }
 }
 
