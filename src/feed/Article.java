@@ -74,7 +74,8 @@ public class Article {
 		}
 		return null;
 	}
-	
+
+	// Modificar para el contador acumulativo
 	public void computeNamedEntities(Heuristic h){
 		String text = this.getTitle() + " " +  this.getText();  
 			
@@ -87,15 +88,14 @@ public class Article {
 			if (h.isEntity(s)){
 				NamedEntity ne = this.getNamedEntity(s);
 				if (ne == null) {
-					this.namedEntityList.add(new NamedEntity(s, null,1));
+					this.namedEntityList.add(new NamedEntity(s, null));
 				}else {
-					ne.incFrequency();
+					System.out.println(NamedEntity.getFrequency());
 				}
 			}
 		} 
 	}
 
-	
 	public void prettyPrint() {
 		System.out.println("**********************************************************************************************");
 		System.out.println("Title: " + this.getTitle());

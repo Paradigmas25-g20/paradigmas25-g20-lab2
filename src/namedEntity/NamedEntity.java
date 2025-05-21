@@ -5,14 +5,16 @@ package namedEntity;
 
 public class NamedEntity {
 	String name;
-	String category; 
-	int frequency;
+	String category;
+	protected static int frequency = 0;
 	
-	public NamedEntity(String name, String category, int frequency) {
+	public NamedEntity(String name, String category) {
 		super();
 		this.name = name;
 		this.category = category;
-		this.frequency = frequency;
+		// Hago el contador de ocurrencias ESTÁTICO, para que aumente cada vez
+		// que creo algún objeto que herede de NamedEntity.
+		NamedEntity.frequency++;
 	}
 
 	public String getName() {
@@ -31,19 +33,18 @@ public class NamedEntity {
 		this.name = name;
 	}
 
-	public int getFrequency() {
+	public static int getFrequency() {
 		return frequency;
 	}
 
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
+//	public void setFrequency(int frequency) {
+//		this.frequency = frequency;
+//	}
 
-	public void incFrequency() {
-		this.frequency++;
-	}
+//	public void incFrequency() {
+//		this.frequency++;
+//	}
 
-	@Override
 	public String toString() {
 		return "ObjectNamedEntity [name=" + name + ", frequency=" + frequency + "]";
 	}
