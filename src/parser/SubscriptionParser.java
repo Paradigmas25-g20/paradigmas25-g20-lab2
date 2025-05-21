@@ -1,5 +1,7 @@
 package parser;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +16,7 @@ import org.json.JSONObject;
  * Leer https://www.w3docs.com/snippets/java/how-to-parse-json-in-java.html
  * */
 
-public class SubscriptionParser extends GeneralParser {
-
+public class SubscriptionParser extends GeneralParser<Subscription> {
 
     @Override
     public Subscription parse(String jsonFile) {
@@ -23,9 +24,9 @@ public class SubscriptionParser extends GeneralParser {
         Subscription parsedSubs = new Subscription();
         try {
             // Leo el archivo de suscripciones.
-
+            FileReader toParseFile = new FileReader(jsonFile);
             // Lo parseo a un arreglo de JSONs.
-            JSONArray toParseSubs = new JSONArray(new JSONTokener(jsonFile));
+            JSONArray toParseSubs = new JSONArray(new JSONTokener(toParseFile));
             // Itero sobre dicho arreglo para ir armando los SingleSubscriptions.
             for (int i = 0; i < toParseSubs.length(); i++) {
                 // Parseo cada elemento del arreglo a un JSON.
@@ -47,12 +48,11 @@ public class SubscriptionParser extends GeneralParser {
         // Devuelvo la lista de suscripciones como un String.
         return parsedSubs;
     }
-/*
-    public static void main(String[] args) {
-        // Main para corroborar la correctitud del parseSubscription.
-        SubscriptionParser parsedData = new SubscriptionParser();
-        System.out.println(parsedData.parseSubscriptions());
-    }
 
- */
+//    public static void main(String[] args) {
+//        // Main para corroborar la correctitud del parseSubscription.
+//        SubscriptionParser parsedData = new SubscriptionParser();
+//        System.out.println(parsedData.parse("config/subscriptions.json"));
+//    }
+
 }
