@@ -26,7 +26,8 @@ public class RssParser extends GeneralParser {
 
     SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 
-    public Feed parseRss (String rssToParse) {
+    @Override
+    public Feed parse (String rssToParse) {
         Feed listFeed = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -36,8 +37,10 @@ public class RssParser extends GeneralParser {
             Document xmldoc = docBuilder.parse(input);
             // Recorremos el rss
             Element rootelement = xmldoc.getDocumentElement();
-            NodeList rootChildren = rootelement.getChildNodes(); //
-            System.out.println("Root element name is " + rootelement.getTagName());
+            NodeList rootChildren = rootelement.getChildNodes();
+
+
+            System.out.println("El elemento Root es: " + rootelement.getTagName());
             Element channelElement = null;
             // El root es rss y nosotros queremos encotrar el primer hijo channel para poder recorrer adentro de el
             for (int i = 0; i < rootChildren.getLength(); i++) {
@@ -52,10 +55,10 @@ public class RssParser extends GeneralParser {
                 listFeed = new Feed(siteNameFromChannel);
 
                 NodeList nList = channelElement.getChildNodes();
-
+                NodeList channelItems = channelElement.getElementsByTagName("item");
                 for (int currentItem = 0; currentItem < nList.getLength(); currentItem++) {
-                    Node itemNode = nList.item(currentItem);
-                    if (itemNode.getNodeType() == Node.ELEMENT_NODE && itemNode.getNodeName().equalsIgnoreCase("item")) {
+                    Node itemNode = channelItems.item(currentItem);
+                    if (itemNode.getNodeType() == Node.ELEMENT_NODE ) {
 
                         Element eElement = (Element) itemNode;
                         String title = getTitle(eElement);
@@ -122,7 +125,7 @@ public class RssParser extends GeneralParser {
         }
         return title;
     }
-
+/*
     public static void main(String[] args) {
         // Coroboramos correctitud acumulativa de la clase.
         RssParser rssToParse = new RssParser();
@@ -131,6 +134,9 @@ public class RssParser extends GeneralParser {
         HttpRequester httpReq = new HttpRequester();
         rssToParse.parseRss(httpReq.getFeedRss(urlToReq)).prettyPrint();
     }
+
+ */
+
 }
 
 

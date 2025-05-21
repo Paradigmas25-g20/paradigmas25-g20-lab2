@@ -1,7 +1,5 @@
 package parser;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +9,6 @@ import subscription.Subscription;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 /*
  * Esta clase implementa el parser del archivo de suscripcion (json)
  * Leer https://www.w3docs.com/snippets/java/how-to-parse-json-in-java.html
@@ -19,12 +16,14 @@ import org.json.JSONObject;
 
 public class SubscriptionParser extends GeneralParser {
 
-    public Subscription parseSubscriptions() {
+
+    @Override
+    public Subscription parse(String jsonFile) {
         // Creo el objeto que guardará mi lista de suscripciones.
         Subscription parsedSubs = new Subscription();
         try {
             // Leo el archivo de suscripciones.
-            FileReader jsonFile = new FileReader("config/subscriptions.json");
+
             // Lo parseo a un arreglo de JSONs.
             JSONArray toParseSubs = new JSONArray(new JSONTokener(jsonFile));
             // Itero sobre dicho arreglo para ir armando los SingleSubscriptions.
@@ -48,10 +47,12 @@ public class SubscriptionParser extends GeneralParser {
         // Devuelvo la lista de suscripciones como un String.
         return parsedSubs;
     }
-
+/*
     public static void main(String[] args) {
         // Main para corroborar la correctitud del parseSubscription.
         SubscriptionParser parsedData = new SubscriptionParser();
         System.out.println(parsedData.parseSubscriptions());
     }
+
+ */
 }

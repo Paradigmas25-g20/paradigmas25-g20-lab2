@@ -43,15 +43,15 @@ public class HttpRequester {
 
 	public String getFeedRss(String fullurlFeed) {
 		System.out.println("Solicitando RSS desde: " + fullurlFeed);
-			return sendRequest(fullurlFeed);
+		return sendRequest(fullurlFeed);
 
 	}
 
 	public String getFeedReedit(String fullurlFeed) {
 		 System.out.println("Solicitando Reddit desde: " + fullurlFeed);
-		return sendRequest(fullurlFeed);
+        return sendRequest(fullurlFeed);
 	}
-
+/*
 	public static void main(String[] args) {
 		// Corroboramos correctitud del httpRequester.
 		SubscriptionParser subsToReq = new SubscriptionParser();
@@ -60,6 +60,8 @@ public class HttpRequester {
 		System.out.println(request.getFeedRss(rssUrlToReq));
 
 	}
+	*/
+
 }
 
 
