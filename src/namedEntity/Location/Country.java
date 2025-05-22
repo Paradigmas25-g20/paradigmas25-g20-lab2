@@ -1,14 +1,17 @@
 package namedEntity.Location;
 
 public class Country extends Location {
+    String capital;
+    protected static int frequency = 0;
 
-    protected static int frecuency=0 ;
     public Country(String name) {
         super(name);
-
-
-        Country.frecuency++;
-
+        Country.frequency++;
     }
-    public int  getFerecuency() {return frequency;}
+
+    public void setCapital(String capital) { this.capital = capital; }
+
+    public String getCapital() { return capital; }
+
+    public static int  getFrequency() {return frequency;}
 }
