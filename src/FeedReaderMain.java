@@ -118,8 +118,10 @@ public class FeedReaderMain {
         while (true) {
             heuristicChosen = hInput.nextLine();
             if (heuristicChosen.equalsIgnoreCase("Q")) {
+                hInput.close();
                 return new QuickHeuristic();
             } else if (heuristicChosen.equalsIgnoreCase("R")) {
+                hInput.close();
                 return new RandomHeuristic();
             } else {
                 System.out.println("""

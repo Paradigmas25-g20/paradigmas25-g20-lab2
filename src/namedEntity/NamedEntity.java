@@ -92,7 +92,7 @@ public class NamedEntity {
 			if (Person.getFrequency() != 0) {
 				System.out.println("Person:" + " " + Person.getFrequency());
 				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-				System.out.println("Name" + " " + Name.getFrequency());
+				System.out.println("Name:" + " " + Name.getFrequency());
 				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				System.out.println("Surname:" + " " + Surname.getFrequency());
 				System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
