@@ -9,6 +9,7 @@ public class Product extends NamedEntity {
 
     public Product (String name) {
         super(name);
+        Product.frequency++;
     }
 
     public void setCommercial(boolean commercial) {

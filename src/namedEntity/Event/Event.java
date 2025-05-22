@@ -12,6 +12,7 @@ public class Event extends NamedEntity {
 
     public Event(String name) {
         super(name);
+        Event.frequency++;
     }
 
     public void setCanonicalForm(String canonicalForm) {

@@ -10,6 +10,7 @@ public class Company extends NamedEntity {
 
     public Company (String name) {
         super(name);
+        Company.frequency++;
     }
 
     public void setCanonicalForm(String canonicalForm) {

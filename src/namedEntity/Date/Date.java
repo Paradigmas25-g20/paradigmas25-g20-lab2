@@ -9,6 +9,7 @@ public class Date extends NamedEntity {
 
     public Date(String name) {
         super(name);
+        Date.frequency++;
     }
 
     public void setPrecise(String precise) {
