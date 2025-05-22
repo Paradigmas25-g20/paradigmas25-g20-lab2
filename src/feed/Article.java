@@ -4,8 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import namedEntity.Location.Address;
+import namedEntity.Location.City;
+import namedEntity.Location.Country;
+import namedEntity.Location.Location;
 import namedEntity.NamedEntity;
+import namedEntity.Other.Other;
+import namedEntity.Person.Name;
+import namedEntity.Person.Person;
+import namedEntity.Person.Surname;
+import namedEntity.Person.Title;
 import namedEntity.heuristic.Heuristic;
+import namedEntity.heuristic.QuickHeuristic;
 
 /*Esta clase modela el contenido de un articulo (ie, un item en el caso del rss feed) */
 
@@ -77,23 +87,17 @@ public class Article {
 
 	// Modificar para el contador acumulativo
 	public void computeNamedEntities(Heuristic h){
-		String text = this.getTitle() + " " +  this.getText();  
-			
+		String text = this.getTitle() + " " +  this.getText();
+
 		String charsToRemove = ".,;:()'!?\n";
 		for (char c : charsToRemove.toCharArray()) {
 			text = text.replace(String.valueOf(c), "");
 		}
-			
 		for (String s: text.split(" ")) {
 			if (h.isEntity(s)){
-				NamedEntity ne = this.getNamedEntity(s);
-				if (ne == null) {
-					this.namedEntityList.add(new NamedEntity(s, null));
-				}else {
-					System.out.println(NamedEntity.getFrequency());
-				}
+				NamedEntity.create(h.detectConcreteCategory(s));
 			}
-		} 
+		}
 	}
 
 	public void prettyPrint() {
@@ -107,12 +111,23 @@ public class Article {
 	}
 	
 	public static void main(String[] args) {
-		  Article a = new Article("This Historically Black University Created Its Own Tech Intern Pipeline",
-			  "A new program at Bowie State connects computing students directly with companies, bypassing an often harsh Silicon Valley vetting process",
+		  Article a = new Article("Donald Trump makes a fool in Russia",
+			  "In a reunion with Messi and Roger, who just got back from Barcelona, Trump took a bad choice.",
 			  new Date(),
 			  "https://www.nytimes.com/2023/04/05/technology/bowie-hbcu-tech-intern-pipeline.html"
 			  );
-		 
+		  Heuristic h = new QuickHeuristic();
+		  a.computeNamedEntities(h);
+		  System.out.println(NamedEntity.getFrequency());
+		  System.out.println(Person.getFrequency());
+		  System.out.println(Name.getFrequency());
+		  System.out.println(Surname.getFrequency());
+		  System.out.println(Title.getFrequency());
+		  System.out.println(Location.getFrequency());
+		  System.out.println(Country.getFrequency());
+		  System.out.println(City.getFrequency());
+		  System.out.println(Address.getFrequency());
+		  System.out.println(Other.getFrequency());
 		  a.prettyPrint();
 	}
 	

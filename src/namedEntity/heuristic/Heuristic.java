@@ -5,21 +5,34 @@ import java.util.Map;
 
 public abstract class Heuristic {
 
-	private static Map<String, List<String>> categoryMap = Map.of(
-			"Microsoft", List.of("Company"),
-			"Apple", List.of("Company"),
-			"Google", List.of("Company"),
-			"Musk", List.of("Person", "Surname"),
-			"Biden", List.of("Person", "Surname"),
-			"Trump", List.of("Person", "Surname"),
-			"Messi", List.of("Person", "Surname"),
-			"Federer", List.of("Person", "Surname"),
-			"USA", List.of("Place", "Country"),
-			"Russia", List.of("Place", "Country")
+	private static Map<String, String> categoryMap = Map.of(
+			"Microsoft", "Company",
+			"Apple", "Company",
+			"Google", "Company",
+			"Musk", "Surname",
+			"Biden", "Surname",
+			"Trump", "Surname",
+			"Messi", "Surname",
+			"Roger", "Name",
+			"Barcelona", "City",
+			"Russia", "Country"
 			);
 
-	public List<String> getCategories(String entity) { return categoryMap.get(entity); }
+	public String getCategories(String entity) { return categoryMap.get(entity); }
+	
+	public String detectConcreteCategory(String entity) {
+			for (String ent: categoryMap.keySet()) {
+				if (entity.equals(ent)) {
+					return categoryMap.get(entity);
+				}
+			}
+			return "Other";
+	}
 
 	public abstract boolean isEntity(String word);
-		
+
+	public static void main(String[] args) {
+		Heuristic h = new QuickHeuristic();
+		System.out.println(h.detectConcreteCategory("Musk"));
+	}
 }

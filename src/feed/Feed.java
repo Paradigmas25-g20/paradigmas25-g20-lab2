@@ -1,5 +1,20 @@
 package feed;
 
+import namedEntity.Company.Company;
+import namedEntity.Event.Event;
+import namedEntity.Location.Address;
+import namedEntity.Location.City;
+import namedEntity.Location.Country;
+import namedEntity.Location.Location;
+import namedEntity.NamedEntity;
+import namedEntity.Other.Other;
+import namedEntity.Person.Name;
+import namedEntity.Person.Person;
+import namedEntity.Person.Surname;
+import namedEntity.Person.Title;
+import namedEntity.Product.Product;
+import namedEntity.DateNe.DateNe;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +70,7 @@ public class Feed {
 		}
 		
 	}
-	
+
 	public static void main(String[] args) {
 		  Article a1 = new Article("This Historically Black University Created Its Own Tech Intern Pipeline",
 			  "A new program at Bowie State connects computing students directly with companies, bypassing an often harsh Silicon Valley vetting process",
