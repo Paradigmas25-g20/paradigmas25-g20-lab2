@@ -5,13 +5,12 @@ package namedEntity;
 
 public class NamedEntity {
 	String name;
-	String category;
+	//String category;
 	protected static int frequency = 0;
-	
-	public NamedEntity(String name, String category) {
+
+	public NamedEntity(String name) {
 		super();
 		this.name = name;
-		this.category = category;
 		// Hago el contador de ocurrencias ESTÁTICO, para que aumente cada vez
 		// que creo algún objeto que herede de NamedEntity.
 		NamedEntity.frequency++;
