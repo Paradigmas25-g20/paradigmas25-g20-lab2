@@ -1,51 +1,49 @@
-//import feed.Article;
+import feed.Article;
 import feed.Feed;
+
 import httpRequest.HttpRequester;
-//import parser.GeneralParser;
-//import parser.RedditParser;
+
+import namedEntity.NamedEntity;
+import namedEntity.heuristic.Heuristic;
+import namedEntity.heuristic.QuickHeuristic;
+import namedEntity.heuristic.RandomHeuristic;
+
 import parser.RssParser;
 import parser.SubscriptionParser;
+
 import subscription.SingleSubscription;
 import subscription.Subscription;
 
-//import java.io.IOException;
-//import java.nio.file.Files;
-//import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
 
 public class FeedReaderMain {
 
     private static void printHelp() {
-        System.out.println("Please, call this program in correct way: FeedReader [-ne]");
+        System.out.println("The correct way to use this program is: FeedReader [-ne]");
     }
 
     public static void main(String[] args) {
         System.out.println("************* FeedReader version 1.0 *************");
         if (args.length == 0) {
-         processSubscription("config/subscriptions.json");
-
+            processSubscription(false, null);
         } else if (args.length == 1) {
-            /*
-			Llamar al Parser especifico para extrar los datos necesarios por la aplicacion
-			Llamar al constructor de Feed
-			Llamar a la heuristica para que compute las entidades nombradas de cada articulos del feed
-			LLamar al prettyPrint de la tabla de entidades nombradas del feed.
-             */
-            processSubscription(args[0]);
+            processSubscription(true, heuristicChooser());
+            NamedEntity.prettyPrint();
         } else {
             printHelp();
         }
     }
 
-    private static void processSubscription(String filepath) {
+    private static void processSubscription(boolean args, Heuristic h) {
         try {
             // Creamos el parser para las suscripciones
             SubscriptionParser subParse = new SubscriptionParser();
-            Subscription subscriptionContainer = subParse.parse(filepath);
+            Subscription subscriptionContainer = subParse.parse("config/subscriptions.json");
             // Creamos el httpRequeser
             HttpRequester http = new HttpRequester();
             //recorremos la lista de Singlesubcripciones
-            for(SingleSubscription singleSub : subscriptionContainer.getSubscriptionsList()) {
+            for (SingleSubscription singleSub : subscriptionContainer.getSubscriptionsList()) {
                 //nos paramos en cada elemento que es una singleSub tonce
                 /*   tenemos
 	                     url;
@@ -57,7 +55,7 @@ public class FeedReaderMain {
                 String feedType = singleSub.getUrlType();
                 //dentro de las singleSub tenemos un array nuevo que son los parametros entonces ahora rrecorremos ese arreglo
                 if (urlParams.isEmpty()) { // Si no hay parámetros, usar la URL base directamente
-                    processFeed(urlBa, feedType, http);
+                    processFeed(urlBa, feedType, http, args, h);
                 } else {
                     for (int i = 0; i < urlParams.size(); i++) {
                     /*
@@ -70,7 +68,7 @@ public class FeedReaderMain {
 
                     */
                         String urlToReq = singleSub.getFeedToRequest(i);
-                        processFeed(urlToReq, feedType, http);
+                        processFeed(urlToReq, feedType, http, args, h);
                         //  aca si todo sale bien recibimos un Html eso hay que parsearlo y sacar topicos
                         // saber que tipo es te sirve para parsearlo mas que nada creo,
 
@@ -79,12 +77,12 @@ public class FeedReaderMain {
                 }
             }
         } catch (Exception e) { // Captura general para otros errores inesperados
-            System.err.println("Un Error ha ocurrido: " + e.getMessage());
+            System.err.println("An error has occurred: " + e.getMessage());
 //            e.printStackTrace();
         }
     }
 
-    private static void processFeed(String url, String urltype, HttpRequester httpRequester) {
+    private static void processFeed(String url, String urltype, HttpRequester httpRequester, boolean args, Heuristic h) {
 //        String content = null;
         Feed feed = null;
         if (urltype.equals("rss")) {
@@ -97,26 +95,38 @@ public class FeedReaderMain {
             }
             if (feed != null) {
                 feed.prettyPrint();
+                if (args) {
+                    for (Article a : feed.getArticleList()) {
+                        a.computeNamedEntities(h);
+                    }
+                }
             } else {
                 System.out.println("Error while parsing the rss feed:" + url);
             }
-
-// TODAVÍA NO ESTÁ IMPLEMENTADO!!!!!!!!!!!!
-//        } else if (urltype.equals("Reddit")) {
-//            content = httpRequester.getFeedReedit(url);
-//
-//            if (content != null && !content.isEmpty()) {
-//                GeneralParser<Feed> redditParser = new RedditParser(); // ¡Usa RedditParser aquí!
-//                feed = redditParser.parse(content);
-//            } else {
-//                System.err.println("No content received for Reddit feed: " + url);
-//            }
-        }   else {
-            // Por el momento, se cambia si llegamos a implementar el parser de reddit
-            System.err.println("Reddit feeds are not available yet: " + url);
-
         }
+        // Aquí iría el manejo de los feeds de reddit, si hubieramos llegado a implementarlo :(
+
     }
 
-
+    private static Heuristic heuristicChooser() {
+        Scanner hInput = new Scanner(System.in);
+        String heuristicChosen;
+        System.out.println("""
+                Choose the wanted heuristic for looking up NamedEntities
+                Press Q for Quick Heuristic
+                Press R for Random Heuristic""");
+        while (true) {
+            heuristicChosen = hInput.nextLine();
+            if (heuristicChosen.equalsIgnoreCase("Q")) {
+                return new QuickHeuristic();
+            } else if (heuristicChosen.equalsIgnoreCase("R")) {
+                return new RandomHeuristic();
+            } else {
+                System.out.println("""
+                        Invalid entry.
+                        Press Q for Quick Heuristic
+                        Press R for Random Heuristic""");
+            }
+        }
+    }
 }
