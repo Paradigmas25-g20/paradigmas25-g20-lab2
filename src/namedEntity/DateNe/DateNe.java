@@ -1,15 +1,15 @@
-package namedEntity.Date;
+package namedEntity.DateNe;
 
 import namedEntity.NamedEntity;
 
-public class Date extends NamedEntity {
+public class DateNe extends NamedEntity {
     String precise;
     String canonicalForm;
     protected static int frequency = 0;
 
-    public Date(String name) {
+    public DateNe(String name) {
         super(name);
-        Date.frequency++;
+        DateNe.frequency++;
     }
 
     public void setPrecise(String precise) {

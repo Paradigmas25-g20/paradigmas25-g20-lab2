@@ -40,7 +40,7 @@ public class RssParser extends GeneralParser {
             NodeList rootChildren = rootelement.getChildNodes();
 
 
-            System.out.println("El elemento Root es: " + rootelement.getTagName());
+            System.out.println("The root element is: " + rootelement.getTagName());
             Element channelElement = null;
             // El root es rss y nosotros queremos encotrar el primer hijo channel para poder recorrer adentro de el
             for (int i = 0; i < rootChildren.getLength(); i++) {
@@ -58,6 +58,9 @@ public class RssParser extends GeneralParser {
                 NodeList channelItems = channelElement.getElementsByTagName("item");
                 for (int currentItem = 0; currentItem < nList.getLength(); currentItem++) {
                     Node itemNode = channelItems.item(currentItem);
+                    if (itemNode == null) {
+                        continue;
+                    }
                     if (itemNode.getNodeType() == Node.ELEMENT_NODE ) {
 
                         Element eElement = (Element) itemNode;
@@ -74,17 +77,17 @@ public class RssParser extends GeneralParser {
                             Article new_art = new Article(title, descrip, data, link);
                             listFeed.addArticle(new_art);
                         } catch (java.text.ParseException pe) { // Atrapar específicamente ParseException
-                            System.err.println("Error al parsear fecha '" + pubDateStr + "' para el artículo con título: '" + title + "'. Omitiendo fecha para este artículo.");
+                            System.err.println("Error while parsing date '" + pubDateStr + "' for the article with title: '" + title + "'. Ignoring date for this article.");
                             // publicationDate permanece null, el artículo se creará sin fecha
                         }
                     }
                 }
             } else {
-                System.out.println("Elemento <channel> no encontrado!");
+                System.out.println("<channel> element not found");
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("Error durante el parseo del XML: " + e.getMessage());
+            System.err.println("Error while parsing the XML: " + e.getMessage());
         }
         return listFeed;
     }

@@ -6,7 +6,7 @@ public class Address extends Location {
 
     public Address(String name) {
         super(name);
-        Country.frequency++;
+        Address.frequency++;
     }
     public static int getFrequency() {return frequency;}
 

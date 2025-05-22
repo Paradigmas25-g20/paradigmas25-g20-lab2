@@ -9,7 +9,6 @@ public class City extends Location {
     public City(String name) {
         super(name);
         City.frequency++;
-
     }
 
     public  void setCapital(String capital) {this.capital = capital;}
